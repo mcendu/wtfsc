@@ -1,4 +1,4 @@
-#/usr/bin/env python3 -O
+#/usr/bin/env python3
 """
 An s-expression based calculator engine
 """
@@ -24,7 +24,10 @@ def sub(a, b):
 def mul(a, b):
     return a*b
 def div(a, b):
-    return a/b
+    try:
+        return a/b
+    except ZeroDivisionError as err:
+        raise InterpreterError('Division by 0')
 def mod(a, b):
     return a%b
 def neg(a):
@@ -65,6 +68,11 @@ reg("tan", math.tan)
 IDENT = re.compile('^[^ \t\r\n()]+$')
 NUM   = re.compile('^[0-9]+(\.[0-9]+)?([eE][+-][0-9]+)?$')
 
+class InterpreterError(Exception):
+    '''All interpreter errors'''
+    def __init__(self, message):
+        self.message = message
+
 def interpret(exp, cstack=[[None]]):
     # Lexical analysis
     tmp = ''
@@ -84,24 +92,40 @@ def interpret(exp, cstack=[[None]]):
                 tmp = ''
             if i==')':
                 if cstack[-1][0] in fnmap:
-                    ret = fnmap[cstack[-1][0]](*cstack[-1][1:len(cstack[-1])])
+                    try:
+                        ret = fnmap[cstack[-1][0]](
+                                *cstack[-1][1:len(cstack[-1])])
+                    except TypeError:
+                        cstack = [[None]]
+                        raise InterpreterError('Too few/many arguments')
+                    except ArithmeticError as err:
+                        cstack = [[None]]
+                        raise InterpreterError('Arithmetic error')
                     cstack[-2].append(ret)
                     cstack.pop()
+                else:
+                    cstack = [[None]]
+                    raise InterpreterError('No such operation')
                 if cstack[0][-1] != None:
                     print(cstack[0][-1])
-                    cstack[0].pop()
+                    cstack = [[None]]
     return cstack
 
 if __name__ == "__main__":
     cstack = [[None]]
     try:
         while 1:
-            if cstack[0][-1] == None:
-                ps = 'wtfsc>'
+            if cstack[-1][0] == None:
+                ps = 'wtfsc> '
             else:
-                ps = '...'
-            interpret(input(ps), cstack)
+                ps = '... '
+            try:
+                cstack = interpret(input(ps) + '\n', cstack)
+            except InterpreterError as err:
+                print(err.message)
     except EOFError:
+        print('\n')
         exit(0)
     except KeyboardInterrupt:
+        print('\n')
         exit(0)

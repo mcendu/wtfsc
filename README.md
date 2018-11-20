@@ -14,7 +14,5 @@ requests
 ## WTF is the language?
 The "lisp" interpreter is written in Python. The
 infix notation parser is written in C.
-## Installation
-    $ ./configure
-    $ make
-    # make install
+## WTF is required to run it?
+Python 3.
