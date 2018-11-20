@@ -96,15 +96,12 @@ def interpret(exp, cstack=[[None]]):
                         ret = fnmap[cstack[-1][0]](
                                 *cstack[-1][1:len(cstack[-1])])
                     except TypeError:
-                        cstack = [[None]]
                         raise InterpreterError('Too few/many arguments')
                     except ArithmeticError as err:
-                        cstack = [[None]]
                         raise InterpreterError('Arithmetic error')
                     cstack[-2].append(ret)
                     cstack.pop()
                 else:
-                    cstack = [[None]]
                     raise InterpreterError('No such operation')
                 if cstack[0][-1] != None:
                     print(cstack[0][-1])
@@ -123,6 +120,7 @@ if __name__ == "__main__":
                 cstack = interpret(input(ps) + '\n', cstack)
             except InterpreterError as err:
                 print(err.message)
+                cstack = [[None]]
     except EOFError:
         print('\n')
         exit(0)
