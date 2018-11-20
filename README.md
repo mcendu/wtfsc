@@ -12,6 +12,9 @@ activity.
 * Alternatively, when others start to send push
 requests
 ## WTF is the language?
-Our school activity teaches C#, but the author
-instead uses C & Python which he thinks is better.
-(C# is designed for Windows.)
+The "lisp" interpreter is written in Python. The
+infix notation parser is written in C.
+## Installation
+ $ ./configure
+ $ make
+ # make install

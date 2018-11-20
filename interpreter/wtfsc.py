@@ -65,7 +65,7 @@ reg("tan", math.tan)
 IDENT = re.compile('^[^ \t\r\n()]+$')
 NUM   = re.compile('^[0-9]+(\.[0-9]+)?([eE][+-][0-9]+)?$')
 
-def intepret(exp, cstack=[[None]]):
+def interpret(exp, cstack=[[None]]):
     # Lexical analysis
     tmp = ''
     for i in iter(exp):
@@ -87,11 +87,21 @@ def intepret(exp, cstack=[[None]]):
                     ret = fnmap[cstack[-1][0]](*cstack[-1][1:len(cstack[-1])])
                     cstack[-2].append(ret)
                     cstack.pop()
-                if cstack[0][0] != None:
-                    print(cstack);
-    return cstack;
+                if cstack[0][-1] != None:
+                    print(cstack[0][-1])
+                    cstack[0].pop()
+    return cstack
 
 if __name__ == "__main__":
     cstack = [[None]]
-    while 1:
-        interpret(input('wtfsc> '), cstack)
+    try:
+        while 1:
+            if cstack[0][-1] == None:
+                ps = 'wtfsc>'
+            else:
+                ps = '...'
+            interpret(input(ps), cstack)
+    except EOFError:
+        exit(0)
+    except KeyboardInterrupt:
+        exit(0)
