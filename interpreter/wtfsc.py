@@ -6,7 +6,7 @@ import math
 import re
 
 fnmap = {}
-const = {
+constmap = {
         "e": math.e,
         "inf": math.inf,
         "nan": math.nan,
@@ -31,13 +31,17 @@ def div(a, b):
 def mod(a, b):
     return a%b
 def neg(a):
-    return -a;
+    return -a
+def q():
+    raise SystemExit
 
 reg("+", add)
 reg("-", sub)
 reg("*", mul)
 reg("/", div)
 reg("neg", neg)
+reg("q", q)
+reg("quit", q)
 
 reg("abs", math.fabs)
 reg("acos", math.acos)
@@ -87,6 +91,9 @@ def interpret(exp, cstack=[[None]]):
             elif NUM.match(tmp):
                 cstack[-1].append(float(tmp))
                 tmp = ''
+            elif tmp in constmap:
+                cstack[-1].append(constmap[tmp])
+                tmp = ''
             else:
                 cstack[-1].append(tmp)
                 tmp = ''
@@ -97,8 +104,8 @@ def interpret(exp, cstack=[[None]]):
                                 *cstack[-1][1:len(cstack[-1])])
                     except TypeError:
                         raise InterpreterError('Too few/many arguments')
-                    except ArithmeticError as err:
-                        raise InterpreterError('Arithmetic error')
+                    except Exception:
+                        raise InterpreterError('Error')
                     cstack[-2].append(ret)
                     cstack.pop()
                 else:
