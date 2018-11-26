@@ -70,7 +70,7 @@ reg("tan", math.tan)
 #...
 
 IDENT = re.compile('^[^ \t\r\n()]+$')
-NUM   = re.compile('^[0-9]+(\.[0-9]+)?([eE][+-][0-9]+)?$')
+NUM   = re.compile('^[+\-]?[0-9]+(\.[0-9]+)?([eE][+-][0-9]+)?$')
 
 class InterpreterError(Exception):
     '''All interpreter errors'''
