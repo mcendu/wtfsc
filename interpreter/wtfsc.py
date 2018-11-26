@@ -102,6 +102,8 @@ def interpret(exp, cstack=[[None]]):
                     try:
                         ret = fnmap[cstack[-1][0]](
                                 *cstack[-1][1:len(cstack[-1])])
+                    except InterpreterError as err:
+                        raise err
                     except TypeError:
                         raise InterpreterError('Too few/many arguments')
                     except Exception:
